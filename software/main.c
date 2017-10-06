@@ -13,17 +13,25 @@ int main()
 {
 
     printf("Hello World\n\r");
-    printf(" multi precicision addition 0x");
+    printf("multi precicision addition \n\r0x");
     mp_add(a,b,r,32);
     for(int i=32;i>=0;i--)
 	printf("%08x",r[i]);
-    printf(" multi precicision substraction 0x");
-    mp_sub(b,a,r,32);
+    printf("\n\r");
+    printf("multi precicision substraction \n\r0x");
+    mp_sub(a,b,r,32);
     for(int i=32;i>=0;i--)
 	printf("%08x",r[i]);
     mod_add(a,b,N,r,32);
-    printf(" modular addition 0x");
-    for(int i=32;i>=0;i--)
+    printf("\n\r");
+    printf("modular addition \n\r0x");
+    for(int i=31;i>=0;i--)
 	printf("%08x",r[i]);
+    mod_sub(a,b,N,r,32);
+    printf("\n\r");
+    printf("modular subtraction \n\r0x");
+    for(int i=31;i>=0;i--)
+	printf("%08x",r[i]);
+    printf("\n\r");
     return 0;
 }
