@@ -98,7 +98,7 @@ void mod_add(uint32_t *a, uint32_t *b, uint32_t *N, uint32_t *res, uint32_t size
 // a and b represent operands, N is the modulus. They are large integers stored in uint32_t arrays of size elements
 void mod_sub(uint32_t *a, uint32_t *b, uint32_t *N, uint32_t *res, uint32_t size)
 {
-	uint32_t diego_res[32];
+	uint32_t buffer[32];
 	if(greater_equal(a,b,size)==1)
 	{
 		//this means that a is greater than b
@@ -108,8 +108,8 @@ void mod_sub(uint32_t *a, uint32_t *b, uint32_t *N, uint32_t *res, uint32_t size
 		mp_sub(a,b,res,size);
 	}
 	else
-	{	mp_sub(b,a,diego_res,size); //result of b-a
-		mp_sub(N,diego_res,res,size); //substract the result from N
+	{	mp_sub(b,a,buffer,size); //result of b-a
+		mp_sub(N,buffer,res,size); //substract the result from N
 
 	}
 }
