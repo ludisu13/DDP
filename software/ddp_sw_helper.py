@@ -79,7 +79,7 @@ def main():
     print ('\n\n\n')
     print_result(mp_add(a, b), '(a + b)' )
     print ('\n\n\n')
-    print_result(mp_sub(a, b), '(a - b)' )
+    print_result(mp_sub(b, a), '(a - b)' )
 
 
     # Ex 2: Modular arithmetic. Comment this out if you don't want to run this code
