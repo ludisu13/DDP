@@ -8,9 +8,9 @@ module hweval_adder(
 
     reg          start;
     reg          subtract;
-    reg  [513:0] in_a;
-    reg  [513:0] in_b;
-    wire [514:0] result;
+    reg  [512:0] in_a;
+    reg  [512:0] in_b;
+    wire [513:0] result;
     wire         done;
        
     // Instantiate the adder    
@@ -46,3 +46,5 @@ module hweval_adder(
     assign data_ok = done & (result=={514{1'b0}});
     
 endmodule
+
+
