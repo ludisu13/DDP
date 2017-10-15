@@ -13,7 +13,7 @@ Assignment:
 */
 
 `timescale 1ns / 1ps
-
+`include "RTL/adder.v"
 `define RESET_TIME 25
 `define CLK_PERIOD 10
 `define CLK_HALF 5
@@ -92,14 +92,15 @@ module tb_adder();
     endtask
 
     initial begin
-
+    $dumpfile("adder.vcd");
+    $dumpvars;
     #`RESET_TIME
 
     /*************TEST ADDITION*************/
     // Check if 1+1=2
     #`CLK_PERIOD;
     perform_add(513'h1, 513'h1);
-    wait (done==1);
+//    wait (done==1);
     result_ok = (result==514'h2);
 
     //Test addition with large test vectors. You can generate your own with the magma online calculator
@@ -107,12 +108,12 @@ module tb_adder();
                 513'h1f30aa08f81b00a1ee9e7d3af7cc01dba81837e2ea4a9ad9fea14343dbbd95eb2a6c44aef080d3dc83efeb5e474699aa9dbed2f56c4a26796bf7b209b7c9491a8);
     wait (done==1);//this is a TRAP, don't use for debug 
     #1 result_ok = (result==514'h3cae6faa5a33f7b644fa44e3366e1027b6e3b765113475c1fc4fee955901dfad931b4ee3efa4d6c3ce29feaf1ba45d18ba6691aa518b36d3c4bb4b15983879c51);
-    $display("result=%x",result);
-
+    $display("result=%8x",result);
+/*
 
     /*************TEST SUBTRACTION*************/
     //Check if 1-1=0
-    #`CLK_PERIOD;
+/*    #`CLK_PERIOD;
     #`CLK_PERIOD;
     #`CLK_PERIOD;
     perform_sub(513'h1, 513'h1);
@@ -125,7 +126,7 @@ module tb_adder();
     wait (done==1);
     result_ok = (result==514'h78629ec2eea705a0352a4c9d88a2b12dd8ac5ad0aa3196ed41f4c5b737a5daacf0a16e146d8c2f25c62352f8bcb6fcbc37194ea6ef14fee06746cdd4b742fb81b);
     $display("result=%x",result);
-    
+  */  
     $finish;
 
     end
