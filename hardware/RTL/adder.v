@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module adder #(parameter ADDER_SIZE=64)(
+module adder #(parameter ADDER_SIZE=4)(
     input  wire         clk,
     input  wire         resetn,
     input  wire         start,
@@ -10,11 +10,11 @@ module adder #(parameter ADDER_SIZE=64)(
     output wire [513:0] result,
     output wire         done    
     );
-    localparam [2:0]    STATE_IDLE  = 3'b000,
-                        STATE_ONE   = 3'b001, 
-                        STATE_TWO   = 3'b010, 
-                        STATE_THREE = 3'b011, 
-                        STATE_FOUR  = 3'b100;   
+    localparam [2:0]    STATE_IDLE  = 3'b000,//waiting for start
+                        STATE_ONE   = 3'b001,//load inputs
+                        STATE_TWO   = 3'b010,//load addition result to output register 
+                        STATE_THREE = 3'b011,//load shifted version to output register 
+                        STATE_FOUR  = 3'b100;//done   
     reg [511:0] reg_result;
     reg [511:0] operand_a;
     reg [511:0] operand_b;
@@ -28,7 +28,7 @@ module adder #(parameter ADDER_SIZE=64)(
     assign mux_sel_result=(state==STATE_THREE) ? 1'b1:1'b0;
     wire [1:0]hack;
     assign hack=in_a[512]+in_b[512]+carry; 
-    reg carry; 
+    reg carry;
     always @(posedge clk) begin
         if (resetn==1'b0 )begin
             reg_result <= 0;
@@ -40,11 +40,13 @@ module adder #(parameter ADDER_SIZE=64)(
             operand_a<= (mux_sel==1'b1)? in_a:((mux_sel_result==1'b1)? operand_a:(operand_a>>ADDER_SIZE)); 		
             operand_b<= (mux_sel==1'b1)? in_b:((mux_sel_result==1'b1)? operand_b:(operand_b>>ADDER_SIZE)); 
             reg_result<= (mux_sel_result==1'b0)? ({add_result[ADDER_SIZE-1:0],reg_result[(512-ADDER_SIZE)-1:0]}):(reg_result>>ADDER_SIZE);
-            carry <= add_result[ADDER_SIZE];
+            carry <= (mux_sel_result==1'b0)? add_result[ADDER_SIZE]:carry;
+	    if(state==STATE_FOUR)
+	    	$display("result %0x ",result);
         end
     end  		
     assign result = {hack[1:0],reg_result};
-    assign add_result =( operand_a[ADDER_SIZE-1:0]+operand_b[ADDER_SIZE-1:0]+carry);
+    assign add_result = (mux_sel_result==1'b0)?( operand_a[ADDER_SIZE-1:0]+operand_b[ADDER_SIZE-1:0]+carry):add_result;//save power
 
                     
     reg  [7:0] cnt;         //3-bit register
@@ -73,11 +75,11 @@ module adder #(parameter ADDER_SIZE=64)(
                            end
                        STATE_TWO:
                             begin
-                                next_state <=(cnt<(512/ADDER_SIZE)) ? STATE_THREE:STATE_FOUR;//?latch 
+                                next_state <= (cnt<((512/ADDER_SIZE)*2-1))?  STATE_THREE:STATE_FOUR;//?latch 
                             end
                        STATE_THREE:
                             begin
-                                next_state <=STATE_TWO; 
+                                next_state <=  STATE_TWO; 
                             end
                        STATE_FOUR: 
                            begin

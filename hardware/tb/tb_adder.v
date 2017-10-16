@@ -100,16 +100,17 @@ module tb_adder();
     // Check if 1+1=2
     #`CLK_PERIOD;
     perform_add(513'h1, 513'h1);
-//    wait (done==1);
+    wait (done==1);
     result_ok = (result==514'h2);
 
+    $display("result=",result_ok);
     //Test addition with large test vectors. You can generate your own with the magma online calculator
     perform_add(513'h1d7dc5a16218f714565bc7a83ea20e4c0ecb7f8226e9dae7fdaeab517d4449c268af0a34ff2402e74a3a1350d45dc36e1ca7beb4e541105a58c3990be06f30aa9,
                 513'h1f30aa08f81b00a1ee9e7d3af7cc01dba81837e2ea4a9ad9fea14343dbbd95eb2a6c44aef080d3dc83efeb5e474699aa9dbed2f56c4a26796bf7b209b7c9491a8);
     wait (done==1);//this is a TRAP, don't use for debug 
-    #1 result_ok = (result==514'h3cae6faa5a33f7b644fa44e3366e1027b6e3b765113475c1fc4fee955901dfad931b4ee3efa4d6c3ce29feaf1ba45d18ba6691aa518b36d3c4bb4b15983879c51);
-    $display("result=%8x",result);
-/*
+     result_ok = (result==514'h3cae6faa5a33f7b644fa44e3366e1027b6e3b765113475c1fc4fee955901dfad931b4ee3efa4d6c3ce29feaf1ba45d18ba6691aa518b36d3c4bb4b15983879c51);
+    $display("result=",result_ok);
+#1300;/*
 
     /*************TEST SUBTRACTION*************/
     //Check if 1-1=0
